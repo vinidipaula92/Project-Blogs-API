@@ -1,0 +1,17 @@
+{
+  "configurations": [
+  {
+    "name": "nodemon",
+    "request": "launch",
+    "runtimeArgs": [
+      "run-script",
+      "debug"
+    ],
+    "runtimeExecutable": "npm",
+    "skipFiles": [
+      "<node_internals>/**"
+    ],
+    "type": "node"
+  }
+  ]
+}
