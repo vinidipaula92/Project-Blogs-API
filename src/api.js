@@ -1,4 +1,5 @@
 const express = require('express');
+const errorHandlerMiddleware = require('./middlewares/errorHandlerMiddleware');
 require('express-async-errors');
 const loginRoute = require('./routes/loginRoute');
 const usersRoute = require('./routes/usersRoute');
@@ -13,10 +14,7 @@ app.use('/login', loginRoute);
 
 app.use('/user', usersRoute);
 
-app.use((err, _req, res, _next) => {
-  const { code, message } = err;
-  res.status(code || 500).json({ message });
-});
+app.use(errorHandlerMiddleware);
 // ...
 
 // É importante exportar a constante `app`,
