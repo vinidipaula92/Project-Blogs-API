@@ -11,6 +11,10 @@ const usersController = {
     const token = await usersService.add(data);
     res.status(201).json({ token });
   },
+  async get(req, res) {
+    const user = await usersService.get(req.params.id);
+    res.status(200).json(user);
+  },
 };
 
 module.exports = usersController;
