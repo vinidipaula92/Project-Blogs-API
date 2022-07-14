@@ -1,16 +1,46 @@
-const jwt = require('jsonwebtoken');
+const Joi = require('joi');
 const models = require('../database/models');
-require('dotenv/config');
+const jwtService = require('./jwtService');
 
 const loginService = {
-  login: async (email, password) => {
-    const user = await models.User.findOne({
-      where: { email, password },
+  validateBodyAdd(unknown) {
+    const schema = Joi.object({
+      email: Joi.string().required(),
+      password: Joi.string().required(),
     });
-    if (!user) return null;
+    const { error, value } = schema.validate(unknown);
 
-    const token = jwt.sign({ data: email }, process.env.JWT_SECRET);
+    if (error) {
+      error.message = 'Some required fields are missing';
+      error.code = 400;
+      throw error;
+    }
+    return value;
+  },
+
+  login: async (data) => {
+    const { email, password } = data;
+    const user = await models.User.findOne({
+      where: { email },
+    });
+    if (!user || user.password !== password) {
+      const error = new Error('Invalid fields');
+      error.code = 400;
+      throw error;
+    }
+
+    const token = jwtService.createToken(email);
     return token;
+  },
+
+  validateToken: (token) => {
+    if (!token) {
+      const error = new Error('Token not found');
+      error.code = 401;
+      throw error;
+    }
+    const data = jwtService.verifyToken(token);
+    return data;
   },
 };
 

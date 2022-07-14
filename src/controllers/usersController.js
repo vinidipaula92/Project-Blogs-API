@@ -3,7 +3,7 @@ const usersService = require('../services/userService');
 const usersController = {
   async list(_req, res) {
     const users = await usersService.list();
-    res.json(users);
+    res.status(200).json(users);
   },
   async add(req, res) {
     const data = await usersService.validateBodyAdd(req.body);

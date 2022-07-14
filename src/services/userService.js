@@ -1,7 +1,6 @@
 const Joi = require('joi');
-const jwt = require('jsonwebtoken');
 const db = require('../database/models');
-require('dotenv/config');
+const jwtService = require('./jwtService');
 
 const usersService = {
   validateBodyAdd(unknown) {
@@ -31,8 +30,8 @@ const usersService = {
   },
 
   async add(data) {
-    const user = await db.User.create(data);
-    const token = jwt.sign(user.email, process.env.JWT_SECRET);
+    const user = await db.User.create({ ...data });
+    const token = jwtService.createToken(user.email);
     return token;    
   },
 
