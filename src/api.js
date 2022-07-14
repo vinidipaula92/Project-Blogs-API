@@ -13,6 +13,10 @@ app.use('/login', loginRoute);
 
 app.use('/user', usersRoute);
 
+app.use((err, _req, res, _next) => {
+  const { code, message } = err;
+  res.status(code || 500).json({ message });
+});
 // ...
 
 // É importante exportar a constante `app`,

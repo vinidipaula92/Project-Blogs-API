@@ -7,8 +7,9 @@ const usersController = {
   },
   async add(req, res) {
     const data = await usersService.validateBodyAdd(req.body);
-    const user = await usersService.add(data);
-    res.status(201).json(user);
+    await usersService.existsEmail(data.email);
+    const token = await usersService.add(data);
+    res.status(201).json({ token });
   },
 };
 
