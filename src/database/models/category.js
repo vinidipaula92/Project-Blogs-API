@@ -15,7 +15,6 @@ const attributes = {
 
 module.exports = (sequelize) => {
   const model = sequelize.define('Category', attributes, {
-    tableName: 'Users',
     timestamps: false,
   });
   return model;
