@@ -1,6 +1,7 @@
 const express = require('express');
-const categoriesRoute = require('./routes/categories');
 require('express-async-errors');
+const errorHandlerMiddleware = require('./middlewares/errorHandlerMiddleware');
+const categoriesRoute = require('./routes/categories');
 const loginRoute = require('./routes/loginRoute');
 const usersRoute = require('./routes/usersRoute');
 
@@ -16,10 +17,7 @@ app.use('/user', usersRoute);
 
 app.use('/categories', categoriesRoute);
 
-app.use((err, _req, res, _next) => {
-  const { message, code } = err;
-  res.status(code || 500).json({ message });
-});
+app.use(errorHandlerMiddleware);
 // ...
 
 // É importante exportar a constante `app`,
