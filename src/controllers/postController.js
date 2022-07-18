@@ -1,11 +1,14 @@
+const jwtService = require('../services/jwtService');
 const postService = require('../services/postService');
 
 const postController = {
   async add(req, res) {
-    const data = await postService.validateBodyAdd(req.body);
-    const categoryId = data.some((id) => id.categoryId);
-    await postService.existsCategoryId(categoryId);
-    const post = await postService.add(data);
+    const { authorization } = req.headers;
+    const data = postService.validateBodyAdd(req.body);
+    const { categoryIds } = data;
+    await postService.existsCategoryId(categoryIds);
+    const user = jwtService.verifyToken(authorization);
+    const post = await postService.add(data, user, categoryIds);
     res.status(201).json(post);
   },
   async list(req, res) {
@@ -17,6 +20,16 @@ const postController = {
     const { id } = req.params;
     await postService.existPostId(id);
     const post = await postService.get(id);
+    res.status(200).json(post);
+  },
+
+  async update(req, res) {
+    const { id } = req.params;
+    const { authorization } = req.headers;
+    const data = postService.validateBodyUpdate(req.body);
+    await postService.existPostId(id);
+    const user = jwtService.verifyToken(authorization);
+    const post = await postService.update(id, user, data);
     res.status(200).json(post);
   },
 };
