@@ -1,4 +1,5 @@
 const Joi = require('joi');
+const { Op } = require('sequelize');
 const db = require('../database/models');
 
 const postService = {
@@ -108,6 +109,44 @@ const postService = {
     await post.update(data);
     return post;
   },
+
+  async delete(id, email) {
+    const user = await db.User.findOne({ where: { email } });
+    const post = await db.BlogPost.findByPk(id, {
+      include: [{ model: db.User, as: 'user', attributes: { exclude: ['password'] } },
+      {
+        model: db.Category,
+        as: 'categories',
+        through: { attributes: [] },
+      }],
+    });
+    if (post.userId !== user.id) {
+      const error = new Error('Unauthorized user');
+      error.code = 401;
+      throw error;
+    }
+    await db.BlogPost.destroy({ where: { id: post.id } });
+  },
+  async search(term) {
+    const title = `%${term}%`;
+    const content = `%${term}%`;
+    const posts = await db.BlogPost.findAll({
+      where: {
+        [Op.or]: [
+          { title: { [Op.like]: title } },
+          { content: { [Op.like]: content } },
+        ],
+      },
+      include: [{ model: db.User, as: 'user', attributes: { exclude: ['password'] } },
+        {
+          model: db.Category,
+          as: 'categories',
+          through: { attributes: [] },
+        }],
+    });
+    return posts;
+  },
+  // referencia sobre Op na documentação do sequelize:
 };
 
 module.exports = postService;

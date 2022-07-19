@@ -53,6 +53,15 @@ const usersService = {
     }
     return user;
   },
+  async delete(user) {
+    const findUser = await db.User.findOne({ where: { email: user } });
+    if (!findUser) {
+      const error = new Error('User does not exist');
+      error.code = 404;
+      throw error;
+    }
+    await db.User.destroy({ where: { id: findUser.id } });
+  },
 };
 
 module.exports = usersService;

@@ -10,6 +10,8 @@ module.exports = {
           key: 'id',
         },
         primaryKey: true,
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
       },
       categoryId: {
         type: Sequelize.INTEGER,
@@ -19,10 +21,12 @@ module.exports = {
           key: 'id',
         },
         primaryKey: true,
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
       }
     });
   },
-  down: async (queryInterface, Sequelize) => {
+  down: async (queryInterface, _Sequelize) => {
     await queryInterface.dropTable('PostCategories');
   }
 };

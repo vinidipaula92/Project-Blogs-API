@@ -16,10 +16,9 @@ const attributes = {
   userId: {
     type: DataTypes.INTEGER,
     allowNull: false,
-    references: {
-      model: 'Users',
-      key: 'id',
-    }
+    foreignKey: true,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
   },
   published: {
     allowNull: false,

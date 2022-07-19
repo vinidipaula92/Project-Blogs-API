@@ -32,6 +32,20 @@ const postController = {
     const post = await postService.update(id, user, data);
     res.status(200).json(post);
   },
+
+  async delete(req, res) {
+    const { id } = req.params;
+    const { authorization } = req.headers;
+    await postService.existPostId(id);
+    const user = jwtService.verifyToken(authorization);
+    await postService.delete(id, user);
+    res.sendStatus(204);
+  },
+  async search(req, res) {
+    const { q } = req.query;
+    const data = await postService.search(q);
+    res.status(200).json(data);
+  },
 };
 
 module.exports = postController;
