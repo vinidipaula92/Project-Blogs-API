@@ -1,10 +1,12 @@
 const express = require('express');
 require('express-async-errors');
+const swaggerUi = require('swagger-ui-express');
 const errorHandlerMiddleware = require('./middlewares/errorHandlerMiddleware');
 const categoriesRoute = require('./routes/categories');
 const loginRoute = require('./routes/loginRoute');
 const postRoute = require('./routes/post');
 const usersRoute = require('./routes/usersRoute');
+const swaggerFile = require('../swagger_output.json');
 
 // ...
 
@@ -21,6 +23,7 @@ app.use('/categories', categoriesRoute);
 app.use('/post', postRoute);
 
 app.use(errorHandlerMiddleware);
+app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerFile));
 // ...
 
 // É importante exportar a constante `app`,
